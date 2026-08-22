@@ -22,9 +22,11 @@ import { DatabaseConfig } from '../config/configuration';
                 password: db.password,
                 database: db.database,
               }),
-          // Los proveedores administrados usan certificados de cadenas que el
-          // contenedor no trae; verificarlos rompería la conexión.
-          ...(db.ssl ? { ssl: { rejectUnauthorized: false } } : {}),
+          // `ssl: true` verifica el certificado contra las CA del sistema.
+          // Neon, Supabase y RDS usan CA públicas, así que valida sin ayuda.
+          // No poner `rejectUnauthorized: false`: acepta cualquier certificado
+          // y deja la conexión (credenciales incluidas) abierta a un MITM.
+          ...(db.ssl ? { ssl: true } : {}),
           entities: [__dirname + '/../**/*.entity{.ts,.js}'],
           migrations: [__dirname + '/migrations/*{.ts,.js}'],
           synchronize: false,

@@ -14,7 +14,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { JoinChatDto, ReadChatDto, SendMessageDto } from './dto/send-message.dto';
-import type { JwtConfig } from '../../config/configuration';
+import { parseOrigins, type JwtConfig } from '../../config/configuration';
 import type { JwtPayload } from '../auth/types/jwt-payload';
 import { WsThrottleGuard } from '../security/guards/ws-throttle.guard';
 
@@ -29,10 +29,7 @@ interface AuthedSocket extends Socket {
   // `origin: true` reflejaba cualquier Origin. Las opciones del decorador se
   // evalúan al cargar la clase, así que no hay ConfigService todavía: se lee
   // el env directo, igual que hace configuration().
-  cors: {
-    origin: (process.env.FRONTEND_URL ?? 'http://localhost:3000').split(',').map((o) => o.trim()),
-    credentials: true,
-  },
+  cors: { origin: parseOrigins(process.env.FRONTEND_URL), credentials: true },
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server!: Server;

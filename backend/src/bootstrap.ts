@@ -38,11 +38,8 @@ export function configureApp(app: NestExpressApplication): void {
   app.use(compression());
   app.use(cookieParser());
 
-  // FRONTEND_URL admite varios orígenes separados por coma (prod + previews).
-  const allowedOrigins = (config.get<string>('app.frontendUrl') ?? '')
-    .split(',')
-    .map((o) => o.trim())
-    .filter(Boolean);
+  // La lista ya viene parseada; app.frontendUrl es sólo el origen canónico.
+  const allowedOrigins = config.getOrThrow<string[]>('app.corsOrigins');
 
   app.enableCors({
     origin: allowedOrigins.length === 1 ? allowedOrigins[0] : allowedOrigins,

@@ -1,7 +1,12 @@
 export interface AppConfig {
   env: 'development' | 'test' | 'production';
   port: number;
+  /** Origen canónico, SIEMPRE uno solo. Es el que se usa para construir links
+   *  que van por email (verificación, reset de password). Nunca usar la lista
+   *  acá: concatenarla produce una URL rota que se lleva el token puesto. */
   frontendUrl: string;
+  /** Allowlist completa para CORS y para el gateway de chat. */
+  corsOrigins: string[];
 }
 
 export interface DatabaseConfig {
@@ -51,11 +56,23 @@ export interface Configuration {
   oauth: OAuthConfig;
 }
 
+const DEFAULT_ORIGIN = 'http://localhost:3000';
+
+export function parseOrigins(raw: string | undefined): string[] {
+  const origins = (raw ?? '')
+    .split(',')
+    .map((o) => o.trim().replace(/\/+$/, ''))
+    .filter(Boolean);
+  return origins.length ? origins : [DEFAULT_ORIGIN];
+}
+
 export const configuration = (): Configuration => ({
   app: {
     env: (process.env.NODE_ENV as AppConfig['env']) ?? 'development',
     port: parseInt(process.env.BACKEND_PORT ?? '3001', 10),
-    frontendUrl: process.env.FRONTEND_URL ?? 'http://localhost:3000',
+    // El primero de la lista es el canónico; el resto son previews/alias.
+    frontendUrl: parseOrigins(process.env.FRONTEND_URL)[0],
+    corsOrigins: parseOrigins(process.env.FRONTEND_URL),
   },
   database: {
     url: process.env.DATABASE_URL || undefined,
