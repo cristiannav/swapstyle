@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, type ExecutionContext } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
@@ -38,6 +38,15 @@ import { EventsModule } from './modules/events/events.module';
       inject: [REDIS_CLIENT],
       useFactory: (redis: Redis) => ({
         storage: new ThrottlerStorageRedisService(redis),
+        // Las probes de liveness pegan cada pocos segundos y el throttler las
+        // cortaba a 429, que un monitoreo lee como caído; y ahora que el estado
+        // vive en Redis, Redis abajo dejaba al health sin poder contestar. Va
+        // acá y no con @SkipThrottle() en el controller porque con throttlers
+        // nombrados el decorador exige nombrarlos uno por uno, y esa lista se
+        // desincroniza en cuanto alguien agregue un tier.
+        skipIf: (ctx: ExecutionContext) =>
+          ctx.getType() === 'http' &&
+          (ctx.switchToHttp().getRequest<{ path?: string }>().path ?? '').startsWith('/api/health'),
         throttlers: [
           { name: 'short', ttl: 1000, limit: 5 },
           { name: 'medium', ttl: 10_000, limit: 30 },
