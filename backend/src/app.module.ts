@@ -7,6 +7,7 @@ import { envValidationSchema } from './config/env.validation';
 import { DatabaseModule } from './database/database.module';
 import { HealthModule } from './common/health/health.module';
 import { RedisModule } from './modules/redis/redis.module';
+import { SecurityModule } from './modules/security/security.module';
 import { MailModule } from './modules/mail/mail.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
@@ -32,6 +33,7 @@ import { EventsModule } from './modules/events/events.module';
     ]),
     DatabaseModule,
     RedisModule,
+    SecurityModule,
     MailModule,
     AuthModule,
     UsersModule,

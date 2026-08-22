@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { safeImageUrl } from '@/lib/security';
 import { Plus, Trash2 } from 'lucide-react';
 import { Button, Field, Image, Input } from '@/components/ui';
 import type { Garment, GarmentCategory, GarmentCondition } from '@/types/api';
@@ -170,7 +171,7 @@ export function GarmentForm({
         <div className="space-y-2">
           {fields.map((field, idx) => {
             const url = images[idx]?.url;
-            const valid = url && /^https?:\/\//.test(url);
+            const valid = !!safeImageUrl(url);
             return (
               <div key={field.id} className="flex items-start gap-2">
                 <div className="h-16 w-16 rounded-md bg-surface-muted overflow-hidden shrink-0 border border-border relative">

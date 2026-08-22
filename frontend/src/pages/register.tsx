@@ -8,20 +8,13 @@ import { Button, Field, Input } from '@/components/ui';
 import { useAuth } from '@/contexts/auth-context';
 import { useToast } from '@/contexts/toast-context';
 import { ApiError } from '@/lib/api-error';
+import { passwordSchema, usernameSchema } from '@/lib/security';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Mínimo 2 caracteres').max(80),
-  username: z
-    .string()
-    .min(3, 'Mínimo 3 caracteres')
-    .max(30)
-    .regex(/^[a-z0-9_.]+$/i, 'Solo letras, números, "_" o "."'),
+  username: usernameSchema,
   email: z.string().email('Email inválido'),
-  password: z
-    .string()
-    .min(8, 'Mínimo 8 caracteres')
-    .regex(/[A-Z]/, 'Incluí una mayúscula')
-    .regex(/[0-9]/, 'Incluí un número'),
+  password: passwordSchema,
   birthdate: z.string().optional().or(z.literal('')),
 });
 

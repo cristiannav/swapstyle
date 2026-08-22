@@ -11,6 +11,7 @@ import { RefreshToken } from './entities/refresh-token.entity';
 import { VerificationToken } from './entities/email-verification.entity';
 import { MailService } from '../mail/mail.service';
 import { REDIS_CLIENT } from '../redis/redis.module';
+import { LoginThrottleService } from '../security/login-throttle.service';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -21,6 +22,11 @@ describe('AuthService', () => {
   let redis: { exists: jest.Mock; set: jest.Mock };
   let jwt: { signAsync: jest.Mock; verify: jest.Mock };
   let dataSource: { transaction: jest.Mock };
+  let loginThrottle: {
+    assertNotLocked: jest.Mock;
+    registerFailure: jest.Mock;
+    registerSuccess: jest.Mock;
+  };
 
   beforeEach(async () => {
     users = { findOne: jest.fn(), save: jest.fn() };
@@ -31,6 +37,11 @@ describe('AuthService', () => {
     jwt = {
       signAsync: jest.fn(async () => 'signed-token'),
       verify: jest.fn(),
+    };
+    loginThrottle = {
+      assertNotLocked: jest.fn(),
+      registerFailure: jest.fn(),
+      registerSuccess: jest.fn(),
     };
     dataSource = {
       transaction: jest.fn(async (cb) => {
@@ -67,6 +78,7 @@ describe('AuthService', () => {
           },
         },
         { provide: DataSource, useValue: dataSource },
+        { provide: LoginThrottleService, useValue: loginThrottle },
       ],
     }).compile();
 

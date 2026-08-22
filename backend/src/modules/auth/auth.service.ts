@@ -20,6 +20,7 @@ import {
 } from './entities/email-verification.entity';
 import { MailService } from '../mail/mail.service';
 import { REDIS_CLIENT } from '../redis/redis.module';
+import { LoginThrottleService } from '../security/login-throttle.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import type { JwtConfig } from '../../config/configuration';
@@ -49,6 +50,7 @@ export class AuthService {
     private readonly config: ConfigService,
     private readonly dataSource: DataSource,
     private readonly mail: MailService,
+    private readonly loginThrottle: LoginThrottleService,
   ) {}
 
   async register(dto: RegisterDto, meta: { ip?: string; userAgent?: string }): Promise<AuthResult> {
@@ -95,6 +97,9 @@ export class AuthService {
   }
 
   async login(dto: LoginDto, meta: { ip?: string; userAgent?: string }): Promise<AuthResult> {
+    // Antes de tocar la DB: si la cuenta o la IP están bloqueadas, cortamos acá.
+    await this.loginThrottle.assertNotLocked(dto.email, meta.ip);
+
     const user = await this.users.findOne({ where: { email: dto.email } });
     const stored = user?.passwordHash;
 
@@ -105,8 +110,13 @@ export class AuthService {
       : (await argon2.verify(dummy, dto.password).catch(() => false), false);
 
     if (!user || !stored || !valid) {
+      // Se cuenta el intento contra el email enviado exista o no la cuenta,
+      // para no filtrar qué emails están registrados.
+      await this.loginThrottle.registerFailure(dto.email, meta.ip);
       throw new UnauthorizedException('Credenciales inválidas');
     }
+
+    await this.loginThrottle.registerSuccess(dto.email);
 
     user.lastLoginAt = new Date();
     await this.users.save(user);

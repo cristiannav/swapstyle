@@ -6,15 +6,12 @@ import { z } from 'zod';
 import { Button, Field, Input } from '@/components/ui';
 import { authService } from '@/services/auth.service';
 import { useToast } from '@/contexts/toast-context';
+import { passwordSchema } from '@/lib/security';
 import { ApiError } from '@/lib/api-error';
 
 const schema = z
   .object({
-    password: z
-      .string()
-      .min(8, 'Mínimo 8 caracteres')
-      .regex(/[A-Z]/, 'Incluí una mayúscula')
-      .regex(/[0-9]/, 'Incluí un número'),
+    password: passwordSchema,
     confirm: z.string(),
   })
   .refine((d) => d.password === d.confirm, {

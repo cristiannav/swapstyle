@@ -8,6 +8,7 @@ import {
   IsDateString,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { IsStrongPassword } from '../../security/validators/is-strong-password';
 
 export class RegisterDto {
   @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
@@ -15,8 +16,7 @@ export class RegisterDto {
   email!: string;
 
   @IsString()
-  @MinLength(8)
-  @MaxLength(72)
+  @IsStrongPassword()
   password!: string;
 
   @IsString()

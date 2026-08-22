@@ -1,5 +1,6 @@
 import type { ComponentPropsWithoutRef } from 'react';
 import { cn } from '@/lib/cn';
+import { safeImageUrl } from '@/lib/security';
 
 type ImageProps = Omit<ComponentPropsWithoutRef<'img'>, 'src' | 'loading'> & {
   src: string;
@@ -15,9 +16,13 @@ type ImageProps = Omit<ComponentPropsWithoutRef<'img'>, 'src' | 'loading'> & {
  * pero conserva el lazy-loading por defecto que traía next/image.
  */
 export function Image({ src, alt = '', fill, priority, className, ...props }: ImageProps) {
+  // Las URLs vienen de las prendas que carga el usuario: se filtran por protocolo.
+  const safe = safeImageUrl(src);
+  if (!safe) return null;
+
   return (
     <img
-      src={src}
+      src={safe}
       alt={alt}
       loading={priority ? 'eager' : 'lazy'}
       fetchPriority={priority ? 'high' : 'auto'}

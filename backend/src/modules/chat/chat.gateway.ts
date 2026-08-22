@@ -1,4 +1,4 @@
-import { Logger, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Logger, UseFilters, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import {
@@ -16,15 +16,23 @@ import { ChatService } from './chat.service';
 import { JoinChatDto, ReadChatDto, SendMessageDto } from './dto/send-message.dto';
 import type { JwtConfig } from '../../config/configuration';
 import type { JwtPayload } from '../auth/types/jwt-payload';
+import { WsThrottleGuard } from '../security/guards/ws-throttle.guard';
 
 interface AuthedSocket extends Socket {
   data: { user?: JwtPayload };
 }
 
+@UseGuards(WsThrottleGuard)
 @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 @WebSocketGateway({
   namespace: '/chat',
-  cors: { origin: true, credentials: true },
+  // `origin: true` reflejaba cualquier Origin. Las opciones del decorador se
+  // evalúan al cargar la clase, así que no hay ConfigService todavía: se lee
+  // el env directo, igual que hace configuration().
+  cors: {
+    origin: (process.env.FRONTEND_URL ?? 'http://localhost:3000').split(',').map((o) => o.trim()),
+    credentials: true,
+  },
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server!: Server;
