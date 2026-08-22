@@ -1,5 +1,5 @@
 # Dependencias
-#.env
+.env
 node_modules/
 graphify-out/
 

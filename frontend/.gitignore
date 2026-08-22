@@ -2,5 +2,5 @@
 
 node_modules/
 graphify-out/
-#.env
+.env
 .env.example
