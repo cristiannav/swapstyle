@@ -12,11 +12,19 @@ import { DatabaseConfig } from '../config/configuration';
         const db = config.getOrThrow<DatabaseConfig>('database');
         return {
           type: 'postgres',
-          host: db.host,
-          port: db.port,
-          username: db.username,
-          password: db.password,
-          database: db.database,
+          // DATABASE_URL gana sobre los POSTGRES_* sueltos.
+          ...(db.url
+            ? { url: db.url }
+            : {
+                host: db.host,
+                port: db.port,
+                username: db.username,
+                password: db.password,
+                database: db.database,
+              }),
+          // Los proveedores administrados usan certificados de cadenas que el
+          // contenedor no trae; verificarlos rompería la conexión.
+          ...(db.ssl ? { ssl: { rejectUnauthorized: false } } : {}),
           entities: [__dirname + '/../**/*.entity{.ts,.js}'],
           migrations: [__dirname + '/migrations/*{.ts,.js}'],
           synchronize: false,

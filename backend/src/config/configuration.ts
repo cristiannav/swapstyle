@@ -5,14 +5,19 @@ export interface AppConfig {
 }
 
 export interface DatabaseConfig {
+  /** Connection string de un proveedor administrado; si está, tiene prioridad. */
+  url?: string;
   host: string;
   port: number;
   username: string;
   password: string;
   database: string;
+  ssl: boolean;
 }
 
 export interface RedisConfig {
+  /** redis:// o rediss:// con credenciales; si está, tiene prioridad. */
+  url?: string;
   host: string;
   port: number;
 }
@@ -53,13 +58,16 @@ export const configuration = (): Configuration => ({
     frontendUrl: process.env.FRONTEND_URL ?? 'http://localhost:3000',
   },
   database: {
+    url: process.env.DATABASE_URL || undefined,
     host: process.env.POSTGRES_HOST ?? 'localhost',
     port: parseInt(process.env.POSTGRES_PORT ?? '5432', 10),
     username: process.env.POSTGRES_USER ?? 'swapstyle',
     password: process.env.POSTGRES_PASSWORD ?? 'swapstyle_dev',
     database: process.env.POSTGRES_DB ?? 'swapstyle',
+    ssl: process.env.POSTGRES_SSL === 'true',
   },
   redis: {
+    url: process.env.REDIS_URL || undefined,
     host: process.env.REDIS_HOST ?? 'localhost',
     port: parseInt(process.env.REDIS_PORT ?? '6379', 10),
   },

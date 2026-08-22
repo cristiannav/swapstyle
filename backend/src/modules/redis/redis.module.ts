@@ -14,12 +14,10 @@ export const REDIS_CLIENT = Symbol('REDIS_CLIENT');
       inject: [ConfigService],
       useFactory: (config: ConfigService): Redis => {
         const redis = config.getOrThrow<RedisConfig>('redis');
-        return new Redis({
-          host: redis.host,
-          port: redis.port,
-          lazyConnect: false,
-          maxRetriesPerRequest: 3,
-        });
+        const options = { lazyConnect: false, maxRetriesPerRequest: 3 };
+        // Upstash y compañía entregan una rediss:// con password embebida;
+        // ioredis la parsea (incluido el TLS) si se la pasás como string.
+        return redis.url ? new Redis(redis.url, options) : new Redis({ ...options, host: redis.host, port: redis.port });
       },
     },
   ],
