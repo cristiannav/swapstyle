@@ -45,6 +45,8 @@ export const envValidationSchema = Joi.object({
   }),
   // Neon/Supabase/RDS exigen TLS; el Postgres de docker-compose no lo tiene.
   POSTGRES_SSL: Joi.boolean().default(false),
+  // PEM de una CA propia. Si no está, se usa la de Supabase (ver supabase-ca.ts).
+  POSTGRES_CA: Joi.string().allow('').optional(),
 
   // Idem Redis: Upstash entrega una rediss:// con password embebida.
   REDIS_URL: Joi.string().uri({ scheme: ['redis', 'rediss'] }).optional(),

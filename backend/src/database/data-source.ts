@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { config as loadEnv } from 'dotenv';
 import { join } from 'path';
+import { SUPABASE_ROOT_CA } from './supabase-ca';
 
 loadEnv({ path: join(__dirname, '../../../../.env') });
 loadEnv({ path: join(__dirname, '../../.env') });
@@ -18,7 +19,9 @@ export const AppDataSource = new DataSource({
         password: process.env.POSTGRES_PASSWORD ?? 'swapstyle_dev',
         database: process.env.POSTGRES_DB ?? 'swapstyle',
       }),
-  ...(process.env.POSTGRES_SSL === 'true' ? { ssl: true } : {}),
+  ...(process.env.POSTGRES_SSL === 'true'
+    ? { ssl: { ca: process.env.POSTGRES_CA || SUPABASE_ROOT_CA } }
+    : {}),
   entities: [join(__dirname, '../**/*.entity{.ts,.js}')],
   migrations: [join(__dirname, 'migrations/*{.ts,.js}')],
   synchronize: false,

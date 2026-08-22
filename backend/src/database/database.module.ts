@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfig } from '../config/configuration';
+import { SUPABASE_ROOT_CA } from './supabase-ca';
 
 @Module({
   imports: [
@@ -22,11 +23,11 @@ import { DatabaseConfig } from '../config/configuration';
                 password: db.password,
                 database: db.database,
               }),
-          // `ssl: true` verifica el certificado contra las CA del sistema.
-          // Neon, Supabase y RDS usan CA públicas, así que valida sin ayuda.
-          // No poner `rejectUnauthorized: false`: acepta cualquier certificado
-          // y deja la conexión (credenciales incluidas) abierta a un MITM.
-          ...(db.ssl ? { ssl: true } : {}),
+          // Supabase firma con su propia CA, que no está en el almacén del
+          // sistema, así que hay que pinearla. Nunca `rejectUnauthorized:
+          // false`: acepta cualquier certificado y deja la conexión
+          // (credenciales incluidas) abierta a un MITM.
+          ...(db.ssl ? { ssl: { ca: db.ca ?? SUPABASE_ROOT_CA } } : {}),
           entities: [__dirname + '/../**/*.entity{.ts,.js}'],
           migrations: [__dirname + '/migrations/*{.ts,.js}'],
           synchronize: false,

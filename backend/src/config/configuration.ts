@@ -18,6 +18,8 @@ export interface DatabaseConfig {
   password: string;
   database: string;
   ssl: boolean;
+  /** PEM de la CA a pinear. Vacío = CAs del sistema. */
+  ca?: string;
 }
 
 export interface RedisConfig {
@@ -82,6 +84,7 @@ export const configuration = (): Configuration => ({
     password: process.env.POSTGRES_PASSWORD ?? 'swapstyle_dev',
     database: process.env.POSTGRES_DB ?? 'swapstyle',
     ssl: process.env.POSTGRES_SSL === 'true',
+    ca: process.env.POSTGRES_CA || undefined,
   },
   redis: {
     // La integración de Upstash en Vercel inyecta KV_URL en vez de REDIS_URL
