@@ -39,6 +39,11 @@ import { SUPABASE_ROOT_CA } from './supabase-ca';
           // 10 por request y el pooler de Supabase corta el tenant entero
           // (ECIRCUITBREAKER). Fallar rápido es preferible.
           retryAttempts: isDev ? 10 : 1,
+          // El pooler de Supabase da 15 slots para todo el proyecto y TypeORM
+          // abre 10 por pool: con dos instancias serverless arriba, la tercera
+          // ya no entra (EMAXCONNSESSION) y el proceso muere al arrancar. Una
+          // conexión por instancia y que se suelte enseguida al quedar ociosa.
+          ...(isDev ? {} : { extra: { max: 1, idleTimeoutMillis: 10_000 } }),
           logging: config.get('app.env') === 'development' ? ['error', 'warn'] : ['error'],
         };
       },
