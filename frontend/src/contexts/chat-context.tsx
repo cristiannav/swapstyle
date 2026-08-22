@@ -44,6 +44,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [connected, setConnected] = useState(false);
   const [typingPeers, setTypingPeers] = useState<TypingState[]>([]);
 
+  // Salas en las que estamos. En Vercel la conexión se corta al llegar al
+  // maxDuration de la función: Socket.IO reconecta solo pero el server pierde
+  // las salas, y sin re-emitir el join el usuario queda conectado y en silencio.
+  const joinedRooms = useRef(new Set<string>());
+
   const messageListeners = useRef(new Set<(matchId: string, message: Message) => void>());
   const readListeners = useRef(
     new Set<(event: { matchId: string; messageIds: string[]; readerId: string }) => void>(),
@@ -60,7 +65,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       reconnection: true,
     });
 
-    s.on('connect', () => setConnected(true));
+    s.on('connect', () => {
+      setConnected(true);
+      joinedRooms.current.forEach((matchId) => s.emit('chat:join', { matchId }));
+    });
     s.on('disconnect', () => setConnected(false));
 
     s.on('chat:message', (message: Message) => {
@@ -105,6 +113,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   const joinMatch = useCallback(
     (matchId: string) => {
+      joinedRooms.current.add(matchId);
       socket?.emit('chat:join', { matchId });
     },
     [socket],
@@ -112,6 +121,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   const leaveMatch = useCallback(
     (matchId: string) => {
+      joinedRooms.current.delete(matchId);
       socket?.emit('chat:leave', { matchId });
     },
     [socket],
