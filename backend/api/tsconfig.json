@@ -1,0 +1,9 @@
+{
+  "//": "api/ vive fuera del rootDir de ../tsconfig.json (que apunta a src/ para que nest build emita dist/main.js). Este config es el que usa el builder de Vercel y el que permite chequear el entrypoint.",
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "noEmit": true
+  },
+  "include": ["./**/*.ts", "../src/**/*.ts"]
+}
