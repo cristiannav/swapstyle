@@ -43,7 +43,12 @@ import { SUPABASE_ROOT_CA } from './supabase-ca';
           // abre 10 por pool: con dos instancias serverless arriba, la tercera
           // ya no entra (EMAXCONNSESSION) y el proceso muere al arrancar. Una
           // conexión por instancia y que se suelte enseguida al quedar ociosa.
-          ...(isDev ? {} : { extra: { max: 1, idleTimeoutMillis: 10_000 } }),
+          // connectionTimeoutMillis por defecto es 0 = esperar para siempre. Con el
+          // pooler saturado el connect no falla, se cuelga, y con él el arranque
+          // entero: cada request que llega mientras tanto queda encolado 300s.
+          ...(isDev
+            ? {}
+            : { extra: { max: 1, idleTimeoutMillis: 10_000, connectionTimeoutMillis: 8_000 } }),
           logging: config.get('app.env') === 'development' ? ['error', 'warn'] : ['error'],
         };
       },
