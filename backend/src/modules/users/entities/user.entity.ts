@@ -36,7 +36,7 @@ export class User extends BaseEntity {
   @Column({ type: 'date', nullable: true })
   birthdate!: Date | null;
 
-  @Column({ type: 'varchar', length: 16, nullable: true })
+  @Column({ type: 'varchar', length: 32, nullable: true })
   gender!: string | null;
 
   @Column({ type: 'text', nullable: true })
