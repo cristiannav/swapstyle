@@ -1,0 +1,1 @@
+{"version":3,"file":"garment.dto.js","sourceRoot":"","sources":["../../../../src/modules/garments/dto/garment.dto.ts"],"names":[],"mappings":";;AAUA,oCAMC;AAfD,mDAAwE;AASxE,SAAgB,YAAY,CAAC,OAAgB;IAC3C,MAAM,EAAE,KAAK,EAAE,GAAG,IAAI,EAAE,GAAG,OAAO,CAAC;IACnC,OAAO;QACL,GAAG,IAAI;QACP,KAAK,EAAE,KAAK,CAAC,CAAC,CAAC,IAAA,wBAAe,EAAC,KAAK,CAAC,CAAC,CAAC,CAAC,SAAS;KAClD,CAAC;AACJ,CAAC"}
