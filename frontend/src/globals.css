@@ -1,0 +1,186 @@
+@import "tailwindcss";
+
+/* ===========================================================
+   SwapStyle — Design System
+   Style: Soft UI Evolution + Editorial moments
+   Pattern: Wardrobe & Outfit Planner palette (rose + gold)
+   Typography: Playfair Display (display/serif) + Inter (UI)
+   =========================================================== */
+
+@theme {
+  /* ===== Brand: rose + gold ===== */
+  --color-brand-50:  #fdf2f8;
+  --color-brand-100: #fce7f3;
+  --color-brand-200: #fbcfe8;
+  --color-brand-300: #f9a8d4;
+  --color-brand-400: #f472b6;
+  --color-brand-500: #ec4899;  /* secondary highlight */
+  --color-brand-600: #be185d;  /* primary CTA */
+  --color-brand-700: #9d174d;
+  --color-brand-800: #831843;
+  --color-brand-900: #500724;
+
+  --color-gold-50:  #fffbeb;
+  --color-gold-100: #fef3c7;
+  --color-gold-300: #fcd34d;
+  --color-gold-500: #d97706;   /* accent: premium / super-like */
+  --color-gold-600: #b45309;
+  --color-gold-700: #92400e;
+
+  /* Semantic */
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
+  --color-danger:  #dc2626;
+  --color-info:    #0ea5e9;
+
+  /* Surfaces */
+  --color-surface:        #ffffff;
+  --color-surface-muted:  #fbf1f5;   /* light rosé tint */
+  --color-surface-warm:   #fdf2f8;   /* page background */
+  --color-surface-cream:  #fef9f3;   /* alt warm */
+  --color-overlay:        rgba(15, 23, 42, 0.55);
+
+  /* Borders */
+  --color-border:         #f7e3eb;
+  --color-border-strong:  #f0c5d6;
+
+  /* Text */
+  --color-text-primary:   #0f172a;   /* slate-950 — strong contrast */
+  --color-text-secondary: #475569;   /* slate-600 */
+  --color-text-muted:     #94a3b8;   /* slate-400 */
+  --color-text-on-brand:  #ffffff;
+
+  /* ===== Typography ===== */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Playfair Display', 'Times New Roman', serif;
+
+  /* Type scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 3.75rem;
+
+  /* ===== Radii ===== */
+  --radius-sm:  0.375rem;
+  --radius-md:  0.625rem;
+  --radius-lg:  0.875rem;
+  --radius-xl:  1.25rem;
+  --radius-2xl: 1.75rem;
+  --radius-3xl: 2rem;
+  --radius-full: 9999px;
+
+  /* ===== Shadows (Soft UI Evolution) ===== */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-card: 0 4px 12px -2px rgba(15, 23, 42, 0.06), 0 2px 4px -1px rgba(15, 23, 42, 0.04);
+  --shadow-card-hover: 0 12px 28px -8px rgba(190, 24, 93, 0.18), 0 6px 12px -4px rgba(15, 23, 42, 0.08);
+  --shadow-modal: 0 32px 80px -16px rgba(15, 23, 42, 0.24);
+  --shadow-glow: 0 0 0 4px rgba(236, 72, 153, 0.18);
+
+  /* Brand gradient (hero, CTAs) */
+  --gradient-brand: linear-gradient(135deg, #be185d 0%, #ec4899 50%, #d97706 100%);
+  --gradient-soft:  linear-gradient(160deg, #fdf2f8 0%, #ffffff 60%, #fef9f3 100%);
+
+  /* Motion */
+  --easing-standard: cubic-bezier(0.2, 0.0, 0.0, 1.0);
+  --easing-emphasized: cubic-bezier(0.2, 0.0, 0, 1.0);
+  --duration-fast: 150ms;
+  --duration-base: 220ms;
+  --duration-slow: 320ms;
+}
+
+/* ===========================================================
+   Base
+   =========================================================== */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    background-color: var(--color-surface-warm);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01', 'ss03';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body { line-height: 1.5; }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  /* Visible focus */
+  *:focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Selection */
+  ::selection {
+    background: var(--color-brand-200);
+    color: var(--color-brand-900);
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Better number rendering for prices/dates */
+  .tabular-nums { font-variant-numeric: tabular-nums; }
+
+  /* Hide scrollbar utility */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* ===========================================================
+   Components: gentle utilities
+   =========================================================== */
+@layer components {
+  .text-display {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .text-display-italic {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  .gradient-brand-text {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .surface-card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-card);
+  }
+}

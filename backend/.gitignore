@@ -1,0 +1,6 @@
+# Dependencias
+.env
+node_modules/
+graphify-out/
+
+

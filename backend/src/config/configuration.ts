@@ -1,0 +1,89 @@
+export interface AppConfig {
+  env: 'development' | 'test' | 'production';
+  port: number;
+  frontendUrl: string;
+}
+
+export interface DatabaseConfig {
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+  database: string;
+}
+
+export interface RedisConfig {
+  host: string;
+  port: number;
+}
+
+export interface JwtConfig {
+  accessSecret: string;
+  refreshSecret: string;
+  accessTtl: string;
+  refreshTtl: string;
+}
+
+export interface MailConfig {
+  host: string;
+  port: number;
+  user: string;
+  password: string;
+  from: string;
+}
+
+export interface OAuthConfig {
+  google: { clientId: string; clientSecret: string };
+  facebook: { clientId: string; clientSecret: string };
+}
+
+export interface Configuration {
+  app: AppConfig;
+  database: DatabaseConfig;
+  redis: RedisConfig;
+  jwt: JwtConfig;
+  mail: MailConfig;
+  oauth: OAuthConfig;
+}
+
+export const configuration = (): Configuration => ({
+  app: {
+    env: (process.env.NODE_ENV as AppConfig['env']) ?? 'development',
+    port: parseInt(process.env.BACKEND_PORT ?? '3001', 10),
+    frontendUrl: process.env.FRONTEND_URL ?? 'http://localhost:3000',
+  },
+  database: {
+    host: process.env.POSTGRES_HOST ?? 'localhost',
+    port: parseInt(process.env.POSTGRES_PORT ?? '5432', 10),
+    username: process.env.POSTGRES_USER ?? 'swapstyle',
+    password: process.env.POSTGRES_PASSWORD ?? 'swapstyle_dev',
+    database: process.env.POSTGRES_DB ?? 'swapstyle',
+  },
+  redis: {
+    host: process.env.REDIS_HOST ?? 'localhost',
+    port: parseInt(process.env.REDIS_PORT ?? '6379', 10),
+  },
+  jwt: {
+    accessSecret: process.env.JWT_ACCESS_SECRET!,
+    refreshSecret: process.env.JWT_REFRESH_SECRET!,
+    accessTtl: process.env.JWT_ACCESS_TTL ?? '15m',
+    refreshTtl: process.env.JWT_REFRESH_TTL ?? '7d',
+  },
+  mail: {
+    host: process.env.SMTP_HOST ?? '',
+    port: parseInt(process.env.SMTP_PORT ?? '587', 10),
+    user: process.env.SMTP_USER ?? '',
+    password: process.env.SMTP_PASSWORD ?? '',
+    from: process.env.EMAIL_FROM ?? 'SwapStyle <noreply@swapstyle.app>',
+  },
+  oauth: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID ?? '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
+    },
+    facebook: {
+      clientId: process.env.FACEBOOK_CLIENT_ID ?? '',
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET ?? '',
+    },
+  },
+});
