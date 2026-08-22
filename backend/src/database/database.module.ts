@@ -11,6 +11,7 @@ import { SUPABASE_ROOT_CA } from './supabase-ca';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const db = config.getOrThrow<DatabaseConfig>('database');
+        const isDev = config.get('app.env') === 'development';
         return {
           type: 'postgres',
           // DATABASE_URL gana sobre los POSTGRES_* sueltos.
@@ -32,6 +33,12 @@ import { SUPABASE_ROOT_CA } from './supabase-ca';
           migrations: [__dirname + '/migrations/*{.ts,.js}'],
           synchronize: false,
           autoLoadEntities: true,
+          // Los 10 reintentos por defecto sirven en docker-compose, donde
+          // Postgres tarda en levantar. En serverless cada invocación es un
+          // arranque nuevo, así que una credencial mal puesta se multiplica por
+          // 10 por request y el pooler de Supabase corta el tenant entero
+          // (ECIRCUITBREAKER). Fallar rápido es preferible.
+          retryAttempts: isDev ? 10 : 1,
           logging: config.get('app.env') === 'development' ? ['error', 'warn'] : ['error'],
         };
       },
