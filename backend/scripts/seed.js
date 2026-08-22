@@ -7,6 +7,13 @@ const { config: loadEnv } = require('dotenv');
 loadEnv({ path: path.join(__dirname, '../../.env') });
 loadEnv({ path: path.join(__dirname, '../.env') });
 
+/** El PEM vive en src/database/supabase-ca.ts para que Vercel lo bundlee; acá se
+ *  lee de ahí en vez de duplicarlo, que es como se desincronizan las cosas. */
+function supabaseRootCa() {
+  const src = require('fs').readFileSync(path.join(__dirname, '../src/database/supabase-ca.ts'), 'utf8');
+  return src.match(/-----BEGIN CERTIFICATE-----[\s\S]*?-----END CERTIFICATE-----/)[0];
+}
+
 const PASSWORD_PLAIN = process.env.SEED_PASSWORD || 'Abcd1234';
 const COUNT = Number(process.env.SEED_COUNT) || 90;
 
@@ -274,11 +281,20 @@ function buildFixtures(passwordHash) {
 
 async function main() {
   const client = new Client({
-    host: process.env.POSTGRES_HOST || 'localhost',
-    port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
-    user: process.env.POSTGRES_USER || 'swapstyle',
-    password: process.env.POSTGRES_PASSWORD || 'swapstyle_dev',
-    database: process.env.POSTGRES_DB || 'swapstyle',
+    // Mismo criterio que database.module.ts: DATABASE_URL gana sobre los sueltos.
+    ...(process.env.DATABASE_URL
+      ? { connectionString: process.env.DATABASE_URL }
+      : {
+          host: process.env.POSTGRES_HOST || 'localhost',
+          port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
+          user: process.env.POSTGRES_USER || 'swapstyle',
+          password: process.env.POSTGRES_PASSWORD || 'swapstyle_dev',
+          database: process.env.POSTGRES_DB || 'swapstyle',
+        }),
+    // Supabase firma con su propia CA. Se pinea igual que en el backend, en vez
+    // de apagar la verificación: `rejectUnauthorized: false` acepta cualquier
+    // certificado y manda la password de la base a quien esté en el medio.
+    ...(process.env.POSTGRES_SSL === 'true' ? { ssl: { ca: process.env.POSTGRES_CA || supabaseRootCa() } } : {}),
   });
 
   await client.connect();
