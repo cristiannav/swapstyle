@@ -3,9 +3,11 @@ import { createServer } from 'node:http';
 import express from 'express';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter, type NestExpressApplication } from '@nestjs/platform-express';
-import { IoAdapter } from '@nestjs/platform-socket.io';
+import type Redis from 'ioredis';
 import { AppModule } from '../src/app.module';
 import { configureApp } from '../src/bootstrap';
+import { RedisIoAdapter } from '../src/adapters/redis-io.adapter';
+import { REDIS_CLIENT } from '../src/modules/redis/redis.module';
 
 /**
  * Entrypoint para el runtime serverless de Vercel.
@@ -59,7 +61,7 @@ async function build(): Promise<void> {
     { bufferLogs: true },
   );
   configureApp(app);
-  app.useWebSocketAdapter(new IoAdapter(server));
+  app.useWebSocketAdapter(new RedisIoAdapter(server, app.get<Redis>(REDIS_CLIENT)));
 
   // Express tiene que ser listener ANTES de init(): engine.io captura la cadena
   // al hacer attach y delega en ella lo que no sea suyo. Si acá quedara el

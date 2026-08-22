@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
+import type Redis from 'ioredis';
 import { APP_GUARD } from '@nestjs/core';
 import { configuration } from './config/configuration';
 import { envValidationSchema } from './config/env.validation';
 import { DatabaseModule } from './database/database.module';
 import { HealthModule } from './common/health/health.module';
-import { RedisModule } from './modules/redis/redis.module';
+import { RedisModule, REDIS_CLIENT } from './modules/redis/redis.module';
 import { SecurityModule } from './modules/security/security.module';
 import { MailModule } from './modules/mail/mail.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -26,11 +28,23 @@ import { EventsModule } from './modules/events/events.module';
       validationOptions: { abortEarly: true },
       envFilePath: ['.env', '../../.env'],
     }),
-    ThrottlerModule.forRoot([
-      { name: 'short', ttl: 1000, limit: 5 },
-      { name: 'medium', ttl: 10_000, limit: 30 },
-      { name: 'long', ttl: 60_000, limit: 100 },
-    ]),
+    // El storage por defecto es un Map en memoria que decrementa los contadores
+    // con setTimeout. En serverless eso no funciona: la instancia se suspende
+    // entre invocaciones, los timers no corren, el contador nunca baja y todo
+    // termina en 429 permanente. Además cada instancia contaba por su cuenta,
+    // así que el límite real era el configurado por la cantidad de instancias.
+    ThrottlerModule.forRootAsync({
+      imports: [RedisModule],
+      inject: [REDIS_CLIENT],
+      useFactory: (redis: Redis) => ({
+        storage: new ThrottlerStorageRedisService(redis),
+        throttlers: [
+          { name: 'short', ttl: 1000, limit: 5 },
+          { name: 'medium', ttl: 10_000, limit: 30 },
+          { name: 'long', ttl: 60_000, limit: 100 },
+        ],
+      }),
+    }),
     DatabaseModule,
     RedisModule,
     SecurityModule,
