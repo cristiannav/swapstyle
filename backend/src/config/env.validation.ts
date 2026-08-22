@@ -48,6 +48,7 @@ export const envValidationSchema = Joi.object({
 
   // Idem Redis: Upstash entrega una rediss:// con password embebida.
   REDIS_URL: Joi.string().uri({ scheme: ['redis', 'rediss'] }).optional(),
+  KV_URL: Joi.string().uri({ scheme: ['redis', 'rediss'] }).optional(),
   REDIS_HOST: Joi.string().default('localhost'),
   REDIS_PORT: Joi.number().default(6379),
 

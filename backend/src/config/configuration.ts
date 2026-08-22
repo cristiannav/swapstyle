@@ -84,7 +84,9 @@ export const configuration = (): Configuration => ({
     ssl: process.env.POSTGRES_SSL === 'true',
   },
   redis: {
-    url: process.env.REDIS_URL || undefined,
+    // La integración de Upstash en Vercel inyecta KV_URL en vez de REDIS_URL
+    // según la versión; ambas son la misma rediss:// con la password adentro.
+    url: process.env.REDIS_URL || process.env.KV_URL || undefined,
     host: process.env.REDIS_HOST ?? 'localhost',
     port: parseInt(process.env.REDIS_PORT ?? '6379', 10),
   },
