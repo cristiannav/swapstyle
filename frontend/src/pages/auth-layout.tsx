@@ -49,7 +49,7 @@ export default function AuthLayout() {
 
       {/* Form side */}
       <main className="flex flex-col items-center justify-center px-6 py-12 bg-surface-warm">
-        <Link to="/" className="lg:hidden text-display text-2xl text-brand-700 mb-8">
+        <Link to="/" className="lg:hidden inline-flex min-h-11 items-center text-display text-2xl text-brand-700 mb-6">
           SwapStyle
         </Link>
         <div className="w-full max-w-sm"><Outlet /></div>

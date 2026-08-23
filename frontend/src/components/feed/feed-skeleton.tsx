@@ -1,6 +1,6 @@
 export function FeedSkeleton() {
   return (
-    <div className="relative aspect-[3/4] max-w-md mx-auto rounded-3xl overflow-hidden bg-gradient-to-br from-brand-100/60 to-gold-100/60 border border-border">
+    <div className="absolute inset-0 rounded-3xl overflow-hidden bg-gradient-to-br from-brand-100/60 to-gold-100/60 border border-border">
       <div className="absolute inset-0 animate-pulse">
         <div className="absolute inset-x-0 bottom-0 p-6 space-y-3">
           <div className="h-8 w-2/3 rounded-lg bg-white/40" />

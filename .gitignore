@@ -53,3 +53,5 @@ docs/
 graphify-out/
 .env.example
 CLAUDE.md
+test-results/
+

@@ -7,7 +7,25 @@
    Typography: Playfair Display (display/serif) + Inter (UI)
    =========================================================== */
 
+/* Pantallas bajas: teléfono apaisado, ventanas partidas, teclado abierto. El
+   alto es el que escasea ahí, no el ancho, y los breakpoints de Tailwind sólo
+   miran el ancho. */
+@custom-variant short (@media (max-height: 700px));
+
+/* Teléfono apaisado: sobra ancho y falta alto, así que el feed pasa a fila
+   (título | carta | botones) en vez de apilar. El límite de alto va antes que
+   la orientación porque un monitor también es "landscape". */
+@custom-variant short-landscape (@media (max-height: 540px) and (min-aspect-ratio: 1/1));
+
+/* Puntero fino (mouse/trackpad). Un ancho de tablet no implica que haya
+   mouse: la iPad mide 768px y se toca con el dedo. */
+@custom-variant mouse (@media (hover: hover) and (pointer: fine));
+
 @theme {
+  /* Teléfonos angostos (iPhone SE y compañía): abajo de esto no entran dos
+     columnas ni una fila con miniatura + avatar + texto. */
+  --breakpoint-xs: 23.75rem;
+
   /* ===== Brand: rose + gold ===== */
   --color-brand-50:  #fdf2f8;
   --color-brand-100: #fce7f3;
@@ -159,6 +177,16 @@
    Components: gentle utilities
    =========================================================== */
 @layer components {
+  /* Alto que le queda a una pantalla dentro de <main>: el viewport menos el
+     header (4rem), el padding vertical del layout y la barra inferior en móvil.
+     Va en dvh y no en vh porque en el navegador móvil la barra de direcciones
+     aparece y desaparece: con vh el último mensaje del chat quedaba tapado.
+     Si cambia el padding de app-layout, cambiá estos dos números. */
+  .h-app-viewport { height: calc(100dvh - 11.5rem); }
+  @media (width >= 48rem) {
+    .h-app-viewport { height: calc(100dvh - 7.5rem); }
+  }
+
   .text-display {
     font-family: var(--font-display);
     font-weight: 600;

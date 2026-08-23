@@ -52,18 +52,24 @@ export default function MatchesPage() {
                       <Image src={peerImg} alt={peerGarment.title} fill className="object-cover" />
                     )}
                   </div>
-                  <Avatar src={peer.avatarUrl} alt={peer.name} size="md" />
+                  {/* En un teléfono angosto no entran miniatura + avatar + dos
+                      líneas de texto: el nombre quedaba en "Isa...". */}
+                  <span className="hidden xs:block">
+                    <Avatar src={peer.avatarUrl} alt={peer.name} size="md" />
+                  </span>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold truncate">{peer.name}</p>
+                    <div className="flex items-baseline gap-2">
+                      <p className="font-semibold truncate">{peer.name}</p>
+                      <span className="ml-auto shrink-0 text-xs text-text-muted">
+                        {formatDistanceToNow(match.lastMessageAt ?? match.createdAt)}
+                      </span>
+                    </div>
                     <p className="text-text-secondary text-sm truncate">
                       Querés su <span className="text-text-primary">{peerGarment.title}</span>
                       {' · '}
                       Quiere tu <span className="text-text-primary">{myGarment.title}</span>
                     </p>
                   </div>
-                  <span className="text-xs text-text-muted shrink-0">
-                    {formatDistanceToNow(match.lastMessageAt ?? match.createdAt)}
-                  </span>
                 </Link>
               </li>
             );

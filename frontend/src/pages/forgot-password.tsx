@@ -50,7 +50,7 @@ export default function ForgotPasswordPage() {
         </p>
         <Link
           to="/login"
-          className="inline-block mt-4 text-sm font-semibold text-brand-700 hover:underline"
+          className="inline-flex min-h-11 items-center mt-2 text-sm font-semibold text-brand-700 hover:underline"
         >
           Volver a iniciar sesión
         </Link>
@@ -85,7 +85,7 @@ export default function ForgotPasswordPage() {
       </form>
 
       <p className="text-sm text-text-secondary text-center">
-        <Link to="/login" className="font-semibold text-brand-700 hover:underline">
+        <Link to="/login" className="inline-flex min-h-11 items-center font-semibold text-brand-700 hover:underline">
           Volver a iniciar sesión
         </Link>
       </p>

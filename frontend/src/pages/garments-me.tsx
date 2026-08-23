@@ -25,7 +25,7 @@ export default function MyGarmentsPage() {
 
   return (
     <div className="space-y-6">
-      <header className="flex items-start justify-between gap-4">
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <div>
           <h1 className="text-2xl font-bold">Mis prendas</h1>
           <p className="text-text-secondary text-sm">
@@ -80,17 +80,17 @@ export default function MyGarmentsPage() {
                   </Badge>
                 </div>
               </div>
-              <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute top-2 right-2 flex gap-1 mouse:opacity-0 mouse:group-hover:opacity-100 transition-opacity">
                 <Link
                   to={`/garments/${g.id}/edit`}
-                  className="h-8 w-8 rounded-full bg-white/90 flex items-center justify-center text-text-primary hover:bg-white"
+                  className="h-10 w-10 mouse:h-8 mouse:w-8 rounded-full bg-white/90 flex items-center justify-center text-text-primary hover:bg-white"
                   aria-label="Editar"
                 >
                   <Pencil className="h-4 w-4" />
                 </Link>
                 <button
                   onClick={() => onDelete(g.id)}
-                  className="h-8 w-8 rounded-full bg-white/90 flex items-center justify-center text-danger hover:bg-white"
+                  className="h-10 w-10 mouse:h-8 mouse:w-8 rounded-full bg-white/90 flex items-center justify-center text-danger hover:bg-white"
                   aria-label="Eliminar"
                 >
                   <Trash2 className="h-4 w-4" />

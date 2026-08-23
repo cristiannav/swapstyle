@@ -130,7 +130,7 @@ export default function ProfileEditPage() {
               <textarea
                 id="bio"
                 rows={4}
-                className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
+                className="w-full rounded-md border border-border bg-surface px-3 py-2 text-base sm:text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
                 placeholder="Contá un poco sobre vos y tu estilo..."
                 {...register('bio')}
               />
@@ -152,7 +152,7 @@ export default function ProfileEditPage() {
               <Field label="Género" htmlFor="gender" error={errors.gender?.message}>
                 <select
                   id="gender"
-                  className="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
+                  className="h-11 w-full rounded-md border border-border bg-surface px-3 text-base sm:text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
                   {...register('gender')}
                 >
                   <option value="">—</option>

@@ -11,7 +11,7 @@ export default function EventsPage() {
 
   return (
     <div className="space-y-6 max-w-3xl mx-auto">
-      <header className="flex items-start justify-between gap-4">
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <div>
           <h1 className="text-2xl font-bold">Eventos Speed-Swap</h1>
           <p className="text-text-secondary text-sm">
@@ -75,21 +75,21 @@ function EventCard({ event, currentUserId }: { event: SwapEvent; currentUserId: 
     <Card>
       <CardHeader>
         <div className="flex items-start justify-between gap-3">
-          <div>
+          <div className="min-w-0">
             <h2 className="font-semibold text-lg">{event.title}</h2>
             <p className="text-text-muted text-xs flex items-center gap-1.5 mt-1">
-              <Calendar className="h-3.5 w-3.5" />
+              <Calendar className="h-3.5 w-3.5 shrink-0" />
               {formatter.format(start)} → {formatter.format(end)}
             </p>
           </div>
-          <Badge tone={joined ? 'success' : 'neutral'}>{joined ? 'Inscripto' : event.status}</Badge>
+          <Badge tone={joined ? 'success' : 'neutral'} className="shrink-0">{joined ? 'Inscripto' : event.status}</Badge>
         </div>
       </CardHeader>
       <CardBody>
         {event.description && (
           <p className="text-sm text-text-secondary mb-3">{event.description}</p>
         )}
-        <div className="flex items-center gap-3 text-sm text-text-secondary">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-text-secondary">
           {event.host && (
             <div className="flex items-center gap-2">
               <Avatar src={event.host.avatarUrl} alt={event.host.name} size="xs" />
@@ -97,7 +97,7 @@ function EventCard({ event, currentUserId }: { event: SwapEvent; currentUserId: 
             </div>
           )}
           <span className="flex items-center gap-1">
-            <Users className="h-4 w-4" /> {event.participants?.length ?? 0}/{event.maxParticipants}
+            <Users className="h-4 w-4 shrink-0" /> {event.participants?.length ?? 0}/{event.maxParticipants}
           </span>
         </div>
       </CardBody>

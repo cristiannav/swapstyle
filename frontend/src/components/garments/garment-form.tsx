@@ -104,7 +104,7 @@ export function GarmentForm({
         <Field label="Categoría" htmlFor="category" error={errors.category?.message}>
           <select
             id="category"
-            className="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
+            className="h-11 w-full rounded-md border border-border bg-surface px-3 text-base sm:text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
             {...register('category')}
           >
             {CATEGORIES.map((c) => (
@@ -118,7 +118,7 @@ export function GarmentForm({
         <Field label="Estado" htmlFor="condition" error={errors.condition?.message}>
           <select
             id="condition"
-            className="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
+            className="h-11 w-full rounded-md border border-border bg-surface px-3 text-base sm:text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
             {...register('condition')}
           >
             {CONDITIONS.map((c) => (
@@ -145,7 +145,7 @@ export function GarmentForm({
           id="description"
           rows={4}
           placeholder="Contá la historia de esta prenda..."
-          className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
+          className="w-full rounded-md border border-border bg-surface px-3 py-2 text-base sm:text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
           {...register('description')}
         />
       </Field>
@@ -157,7 +157,7 @@ export function GarmentForm({
             <button
               type="button"
               onClick={() => append({ url: '' })}
-              className="flex items-center gap-1 text-sm text-brand-500 hover:underline"
+              className="flex min-h-11 items-center gap-1 text-sm text-brand-500 hover:underline"
             >
               <Plus className="h-4 w-4" /> Agregar
             </button>

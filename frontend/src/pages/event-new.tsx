@@ -85,7 +85,7 @@ export default function NewEventPage() {
             <p className="text-text-secondary text-sm">
               Pasate a premium para organizar tus propios Speed-Swaps.
             </p>
-            <Link to="/events" className="inline-block mt-2 text-sm font-semibold text-brand-700 hover:underline">
+            <Link to="/events" className="inline-flex min-h-11 items-center text-sm font-semibold text-brand-700 hover:underline">
               Volver a eventos
             </Link>
           </CardBody>
@@ -123,7 +123,7 @@ export default function NewEventPage() {
                 id="description"
                 rows={4}
                 placeholder="Contá de qué va el evento, reglas, temática..."
-                className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
+                className="w-full rounded-md border border-border bg-surface px-3 py-2 text-base sm:text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
                 {...register('description')}
               />
             </Field>

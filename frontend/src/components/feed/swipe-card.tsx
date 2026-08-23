@@ -100,9 +100,9 @@ export function SwipeCard({
         </motion.div>
 
         {/* Content */}
-        <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 text-white space-y-3">
+        <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6 text-white space-y-2 sm:space-y-3">
           <div>
-            <h2 className="text-display text-3xl leading-tight">
+            <h2 className="text-display text-2xl sm:text-3xl leading-tight line-clamp-2">
               {garment.title}
             </h2>
             <div className="flex flex-wrap items-center gap-1.5 mt-2 text-xs">
@@ -129,7 +129,7 @@ export function SwipeCard({
           </div>
 
           {garment.description && (
-            <p className="text-sm text-white/85 line-clamp-2 leading-relaxed">
+            <p className="text-sm text-white/85 line-clamp-2 leading-relaxed short:hidden">
               {garment.description}
             </p>
           )}
@@ -170,12 +170,12 @@ export function SwipeActions({
   disabled?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-center gap-5 pt-4">
+    <div className="flex shrink-0 items-center justify-center gap-5 pt-4 short:gap-3 short:pt-2 short-landscape:flex-col short-landscape:pt-0">
       <ActionButton
         onClick={onPass}
         disabled={disabled}
         ariaLabel="Pasar"
-        className="h-14 w-14 text-rose-500 hover:bg-rose-50 hover:border-rose-200"
+        className="h-14 w-14 short:h-12 short:w-12 text-rose-500 hover:bg-rose-50 hover:border-rose-200"
       >
         <X className="h-7 w-7" strokeWidth={2.5} />
       </ActionButton>
@@ -183,7 +183,7 @@ export function SwipeActions({
         onClick={onSuperLike}
         disabled={disabled}
         ariaLabel="Super Like"
-        className="h-12 w-12 text-gold-600 hover:bg-gold-50 hover:border-gold-200"
+        className="h-12 w-12 short:h-11 short:w-11 text-gold-600 hover:bg-gold-50 hover:border-gold-200"
       >
         <Star className="h-5 w-5 fill-current" />
       </ActionButton>
@@ -191,7 +191,7 @@ export function SwipeActions({
         onClick={onLike}
         disabled={disabled}
         ariaLabel="Me gusta"
-        className="h-14 w-14 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-200"
+        className="h-14 w-14 short:h-12 short:w-12 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-200"
       >
         <Heart className="h-7 w-7 fill-current" strokeWidth={2} />
       </ActionButton>

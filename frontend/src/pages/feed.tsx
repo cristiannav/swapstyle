@@ -88,26 +88,30 @@ export default function FeedPage() {
   );
 
   return (
-    <div className="space-y-5 max-w-md mx-auto">
-      <header className="space-y-4">
+    // El mazo tiene que entrar en la pantalla sin scroll: con una altura fija
+    // (era aspect-[3/4]) los botones de swipe caían abajo del pliegue en
+    // cualquier teléfono, y en apaisado no se veía ni la carta. Ahora la
+    // columna ocupa el alto disponible y la carta se queda con lo que sobra.
+    <div className="mx-auto flex h-app-viewport min-h-[26rem] max-w-md flex-col gap-4 short-landscape:min-h-0 short-landscape:max-w-3xl short-landscape:flex-row short-landscape:items-center short-landscape:gap-6">
+      <header className="shrink-0 space-y-3 short-landscape:flex-1">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-brand-600 font-semibold mb-1">
+          <p className="text-xs uppercase tracking-[0.2em] text-brand-600 font-semibold mb-1 short:hidden">
             Tu feed
           </p>
-          <h1 className="text-display text-3xl text-text-primary">
+          <h1 className="text-display text-2xl sm:text-3xl short:text-xl text-text-primary">
             Encontrá tu próxima{" "}
             <span className="text-display-italic gradient-brand-text">
               prenda favorita
             </span>
           </h1>
-          <p className="text-text-secondary text-sm mt-1.5">
+          <p className="text-text-secondary text-sm mt-1.5 short:hidden">
             Deslizá → si te gusta, ← si no. ★ para super-like.
           </p>
         </div>
         <FiltersPanel />
       </header>
 
-      <div className="relative aspect-[3/4]">
+      <div className="relative min-h-0 flex-1 short-landscape:h-full short-landscape:flex-none short-landscape:aspect-[3/4]">
         {loading ? (
           <FeedSkeleton />
         ) : stack.length === 0 ? (

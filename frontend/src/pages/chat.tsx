@@ -110,9 +110,9 @@ export default function ChatPage() {
   const peerTyping = typingPeers.some((p) => p.matchId === matchId && p.userId === peer?.id);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-9rem)] md:h-[calc(100vh-7rem)] max-w-2xl mx-auto -mx-4 sm:mx-auto bg-surface md:rounded-xl md:border md:border-border overflow-hidden">
+    <div className="flex flex-col h-app-viewport max-w-2xl mx-auto -mx-4 sm:mx-auto bg-surface md:rounded-xl md:border md:border-border overflow-hidden">
       <header className="flex items-center gap-3 px-4 py-3 border-b border-border">
-        <Link to="/matches" className="p-1.5 -ml-1.5 rounded-md hover:bg-surface-muted">
+        <Link to="/matches" className="-ml-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-md hover:bg-surface-muted">
           <ArrowLeft className="h-5 w-5" />
         </Link>
         {peer ? (
@@ -168,7 +168,7 @@ export default function ChatPage() {
           onKeyDown={handleKeyDown}
           rows={1}
           placeholder="Escribí un mensaje..."
-          className="flex-1 resize-none rounded-lg border border-border bg-surface-muted px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200 max-h-32"
+          className="flex-1 min-h-11 resize-none rounded-lg border border-border bg-surface-muted px-3 py-2.5 text-base sm:text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200 max-h-32"
         />
         <Button type="submit" disabled={!draft.trim() || sending} size="md">
           <Send className="h-4 w-4" />
@@ -183,7 +183,7 @@ function ExchangePreview({ match, myId }: { match: Match; myId: string }) {
   const myGarment = iAmA ? match.garmentA : match.garmentB;
   const peerGarment = iAmA ? match.garmentB : match.garmentA;
   const renderImg = (src: string | undefined, alt: string) => (
-    <div className="relative h-12 w-12 rounded-md overflow-hidden bg-surface-muted">
+    <div className="relative h-12 w-12 shrink-0 rounded-md overflow-hidden bg-surface-muted">
       {src && <Image src={src} alt={alt} fill className="object-cover" />}
     </div>
   );
@@ -193,14 +193,14 @@ function ExchangePreview({ match, myId }: { match: Match; myId: string }) {
       <div className="flex items-center gap-2 flex-1 min-w-0">
         {renderImg(myGarment.images[0]?.url, myGarment.title)}
         <div className="min-w-0">
-          <p className="text-text-muted">Tu prenda</p>
+          <p className="text-text-muted hidden xs:block">Tu prenda</p>
           <p className="font-medium truncate">{myGarment.title}</p>
         </div>
       </div>
       <span className="text-brand-500">↔</span>
       <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
         <div className="min-w-0 text-right">
-          <p className="text-text-muted">Su prenda</p>
+          <p className="text-text-muted hidden xs:block">Su prenda</p>
           <p className="font-medium truncate">{peerGarment.title}</p>
         </div>
         {renderImg(peerGarment.images[0]?.url, peerGarment.title)}

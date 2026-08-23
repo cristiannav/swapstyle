@@ -33,7 +33,7 @@ export function FiltersPanel() {
       <div className="flex items-center justify-between">
         <button
           onClick={() => setOpen((o) => !o)}
-          className="flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-text-primary"
+          className="flex min-h-11 items-center gap-2 text-sm font-medium text-text-secondary hover:text-text-primary"
         >
           <Filter className="h-4 w-4" />
           Filtros

@@ -54,7 +54,7 @@ export default function VerifyEmailPage() {
           </p>
           <Link
             to="/login"
-            className="inline-block mt-4 text-sm font-semibold text-brand-700 hover:underline"
+            className="inline-flex min-h-11 items-center mt-2 text-sm font-semibold text-brand-700 hover:underline"
           >
             Iniciar sesión
           </Link>
@@ -67,7 +67,7 @@ export default function VerifyEmailPage() {
           <p className="text-text-secondary text-sm">{errorMessage}</p>
           <Link
             to="/login"
-            className="inline-block mt-4 text-sm font-semibold text-brand-700 hover:underline"
+            className="inline-flex min-h-11 items-center mt-2 text-sm font-semibold text-brand-700 hover:underline"
           >
             Volver a iniciar sesión
           </Link>

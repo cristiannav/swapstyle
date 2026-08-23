@@ -7,10 +7,12 @@ import { useNotifications } from '@/contexts/notifications-context';
 import { cn } from '@/lib/cn';
 
 const navItems = [
-  { href: '/feed', label: 'Feed', icon: Layers, badgeKind: undefined },
-  { href: '/matches', label: 'Matches', icon: Heart, badgeKind: 'match' as const },
-  { href: '/garments/me', label: 'Mis prendas', icon: Sparkles, badgeKind: undefined },
-  { href: '/events', label: 'Eventos', icon: MessageCircle, badgeKind: undefined },
+  { href: '/feed', label: 'Feed', short: 'Feed', icon: Layers, badgeKind: undefined },
+  { href: '/matches', label: 'Matches', short: 'Matches', icon: Heart, badgeKind: 'match' as const },
+  // La barra inferior reparte el ancho en 5: "Mis prendas" no entra en una
+  // columna de 64px y se cortaba a la mitad en cualquier teléfono.
+  { href: '/garments/me', label: 'Mis prendas', short: 'Prendas', icon: Sparkles, badgeKind: undefined },
+  { href: '/events', label: 'Eventos', short: 'Eventos', icon: MessageCircle, badgeKind: undefined },
 ];
 
 export function Header() {
@@ -22,7 +24,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-30 bg-surface-warm/85 backdrop-blur-md border-b border-border/60">
       <div className="mx-auto max-w-6xl flex items-center justify-between px-4 sm:px-6 h-16">
-        <Link to="/feed" className="flex items-center gap-2 group">
+        <Link to="/feed" className="flex min-h-11 shrink-0 items-center gap-2 group">
           <span className="text-display text-2xl text-brand-700 group-hover:text-brand-600 transition-colors">
             SwapStyle
           </span>
@@ -38,7 +40,10 @@ export function Header() {
                 to={href}
                 aria-current={active ? 'page' : undefined}
                 className={cn(
-                  'relative inline-flex items-center gap-2 px-3.5 h-10 rounded-full text-sm font-medium',
+                  // whitespace-nowrap + padding chico hasta lg: en una tablet de
+                  // 768px "Mis prendas" partía en dos renglones y la barra se
+                  // comía el logo.
+                  'relative inline-flex items-center gap-2 px-2.5 lg:px-3.5 h-10 rounded-full text-sm font-medium whitespace-nowrap',
                   'transition-all duration-200 ease-out',
                   active
                     ? 'bg-brand-600 text-white shadow-sm'
@@ -76,7 +81,7 @@ export function Header() {
           <button
             onClick={() => logout()}
             aria-label="Cerrar sesión"
-            className="h-9 w-9 inline-flex items-center justify-center rounded-full text-text-muted hover:text-danger hover:bg-red-50 transition-colors"
+            className="h-11 w-11 mouse:h-9 mouse:w-9 inline-flex items-center justify-center rounded-full text-text-muted hover:text-danger hover:bg-red-50 transition-colors"
           >
             <LogOut className="h-4 w-4" />
           </button>
@@ -92,7 +97,7 @@ export function MobileNav() {
   const badge = notifications.filter((n) => !n.read).length;
   const items = [
     ...navItems,
-    { href: '/profile/edit', label: 'Yo', icon: User, badgeKind: undefined },
+    { href: '/profile/edit', label: 'Yo', short: 'Yo', icon: User, badgeKind: undefined },
   ];
   return (
     <nav
@@ -100,7 +105,7 @@ export function MobileNav() {
       aria-label="Navegación principal"
     >
       <div className="grid grid-cols-5 h-16 pb-[env(safe-area-inset-bottom)]">
-        {items.map(({ href, label, icon: Icon, badgeKind }) => {
+        {items.map(({ href, short, icon: Icon, badgeKind }) => {
           const active = pathname.startsWith(href);
           const showBadge = badgeKind === 'match' && badge > 0;
           return (
@@ -109,7 +114,7 @@ export function MobileNav() {
               to={href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'relative flex flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors',
+                'relative flex min-w-0 flex-col items-center justify-center gap-0.5 px-0.5 text-[10px] xs:text-[11px] font-medium transition-colors',
                 active ? 'text-brand-700' : 'text-text-muted hover:text-text-secondary',
               )}
             >
@@ -121,7 +126,7 @@ export function MobileNav() {
               >
                 <Icon className="h-5 w-5" />
               </span>
-              {label}
+              <span className="w-full truncate text-center leading-none">{short}</span>
               {showBadge && (
                 <span className="absolute top-1.5 right-[calc(50%-18px)] h-2 w-2 rounded-full bg-brand-600 ring-2 ring-surface" />
               )}

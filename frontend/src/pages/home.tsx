@@ -7,7 +7,7 @@ export default function HomePage() {
       {/* Top bar */}
       <header className="px-6 py-5">
         <div className="mx-auto max-w-6xl flex items-center justify-between">
-          <Link to="/" className="text-display text-2xl text-brand-700">
+          <Link to="/" className="inline-flex min-h-11 items-center text-display text-2xl text-brand-700">
             SwapStyle
           </Link>
           <nav className="flex items-center gap-3">
@@ -29,7 +29,7 @@ export default function HomePage() {
       </header>
 
       {/* Hero */}
-      <main className="px-6 py-12 sm:py-20">
+      <main className="px-6 py-12 sm:py-20 overflow-x-clip">
         <div className="mx-auto max-w-6xl grid lg:grid-cols-12 gap-12 items-center">
           <section className="lg:col-span-7 space-y-7">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/70 backdrop-blur px-3 py-1 text-xs font-medium text-brand-700 border border-brand-100">
@@ -88,17 +88,17 @@ export default function HomePage() {
 
           {/* Visual mock cards */}
           <section className="lg:col-span-5 relative">
-            <div className="relative aspect-[3/4] max-w-sm mx-auto">
+            <div className="relative aspect-[3/4] max-w-[14rem] xs:max-w-[16rem] sm:max-w-[20rem] mx-auto">
               {[
                 {
                   rotate: "-8deg",
-                  translate: "-translate-x-6 -translate-y-3",
+                  translate: "sm:-translate-x-6 sm:-translate-y-3",
                   img: "https://images.unsplash.com/photo-1496217590455-aa63a8350eea?w=600&h=800&fit=crop&q=80",
                   tag: "Vestido midi",
                 },
                 {
                   rotate: "4deg",
-                  translate: "translate-x-4",
+                  translate: "sm:translate-x-4",
                   img: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=800&fit=crop&q=80",
                   tag: "Camisa oversize",
                 },
@@ -122,7 +122,7 @@ export default function HomePage() {
                 </div>
               ))}
               {/* Match badge */}
-              <div className="absolute -bottom-4 -right-2 sm:-right-6 rounded-full bg-white shadow-card-hover px-4 py-2.5 flex items-center gap-2 border border-border">
+              <div className="absolute -bottom-6 -right-1 sm:-bottom-4 sm:-right-6 rounded-full bg-white shadow-card-hover px-3 py-2 sm:px-4 sm:py-2.5 flex items-center gap-2 border border-border">
                 <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-gold-500 text-white">
                   <Heart className="h-3.5 w-3.5 fill-current" />
                 </span>

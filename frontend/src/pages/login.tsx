@@ -76,7 +76,7 @@ export default function LoginPage() {
         </Field>
 
         <div className="flex justify-end">
-          <Link to="/forgot-password" className="text-sm text-brand-700 hover:underline">
+          <Link to="/forgot-password" className="inline-flex min-h-11 items-center text-sm text-brand-700 hover:underline">
             Olvidé mi contraseña
           </Link>
         </div>
@@ -88,7 +88,7 @@ export default function LoginPage() {
 
       <p className="text-sm text-text-secondary text-center">
         ¿Aún no tenés cuenta?{' '}
-        <Link to="/register" className="font-semibold text-brand-700 hover:underline">
+        <Link to="/register" className="inline-flex min-h-11 items-center font-semibold text-brand-700 hover:underline">
           Crear cuenta
         </Link>
       </p>
