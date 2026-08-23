@@ -99,7 +99,11 @@ async function build(): Promise<void> {
     // Sin abortOnError:false, un fallo de la base mata el proceso entero
     // (abort()) en vez de propagar: la instancia se cae y Vercel arranca otra
     // que vuelve a pedirle conexión al pooler, que es lo que lo satura.
-    { bufferLogs: true, abortOnError: false },
+    //
+    // Nada de bufferLogs: Nest sólo vacía ese buffer en app.listen(), que acá
+    // no se llama nunca, así que los logs se acumulaban en memoria y no salía
+    // ni una línea por stdout. Producción estaba corriendo a ciegas.
+    { abortOnError: false },
   );
   configureApp(app);
   app.useWebSocketAdapter(new RedisIoAdapter(server, app.get<Redis>(REDIS_CLIENT)));
@@ -121,5 +125,20 @@ async function build(): Promise<void> {
 void init().catch((err) => {
   console.error('[bootstrap] fallo al inicializar Nest', err);
 });
+
+// TEMPORAL — instrumentación para el OOM de producción (cada invocación muere
+// a los ~50s con el heap en 1.8 GB y sin tráfico). Sacar cuando esté cerrado.
+setInterval(() => {
+  const m = process.memoryUsage();
+  const hist: Record<string, number> = {};
+  for (const h of (process as unknown as { _getActiveHandles(): { constructor?: { name?: string } }[] })._getActiveHandles()) {
+    const n = h?.constructor?.name ?? 'unknown';
+    hist[n] = (hist[n] ?? 0) + 1;
+  }
+  const mb = (n: number) => Math.round(n / 1e6);
+  console.log(
+    `[mem] up=${process.uptime().toFixed(0)}s rss=${mb(m.rss)} heap=${mb(m.heapUsed)} ext=${mb(m.external)} ab=${mb(m.arrayBuffers)} handles=${JSON.stringify(hist)}`,
+  );
+}, 3000);
 
 export default server;
