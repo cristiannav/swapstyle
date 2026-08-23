@@ -28,9 +28,20 @@ import { REDIS_CLIENT } from '../src/modules/redis/redis.module';
  *  - Postgres y Redis tienen que ser servicios administrados accesibles por
  *    internet (Supabase y Upstash), no los contenedores de docker-compose.
  */
-const expressApp = express();
 const server = createServer();
 let ready: Promise<void> | undefined;
+
+/**
+ * La cadena de listeners real, capturada al terminar el build: engine.io
+ * adelante (que delega en Express lo que no es suyo) y Express atrás.
+ *
+ * La cola despacha contra esto y NO con server.emit(): re-emitir en el mismo
+ * server es re-entrar en la cola, y cada vuelta dispara otra emisión. En
+ * producción eso atendía el mismo GET 2, 4, 8 veces hasta morir con el heap en
+ * 1.8 GB (132 ERR_HTTP_HEADERS_SENT seguidos en los logs).
+ */
+type Dispatch = (...args: unknown[]) => void;
+let dispatch: Partial<Record<'request' | 'upgrade', Dispatch>> = {};
 
 // Cuánto se espera al arranque antes de contestar 503. Tiene que ser bastante
 // menor que el maxDuration de vercel.json: mientras Nest no termine de armarse
@@ -40,10 +51,9 @@ const BOOT_TIMEOUT_MS = 15_000;
 
 /**
  * Vercel puede mandar tráfico antes de que Nest termine de armarse. Lo que
- * llegue en esa ventana se encola y se re-emite cuando está listo, para que
- * pase por la cadena de listeners real: engine.io primero (que se antepone al
- * hacer attach) y Express después. Sin esto, un request de socket.io durante
- * un arranque en frío caía derecho en Express y volvía 404.
+ * llegue en esa ventana se encola y se despacha contra `dispatch` cuando está
+ * listo. Sin esto, un request de socket.io durante un arranque en frío caía
+ * derecho en Express y volvía 404.
  */
 const queued =
   (event: 'request' | 'upgrade') =>
@@ -66,8 +76,10 @@ const queued =
       () => {
         clearTimeout(timer);
         if (settled) return;
+        const forward = dispatch[event];
+        if (!forward) return bail();
         settled = true;
-        server.emit(event, ...args);
+        forward(...args);
       },
       () => {
         clearTimeout(timer);
@@ -93,6 +105,10 @@ function init(): Promise<void> {
 }
 
 async function build(): Promise<void> {
+  // Express nuevo por intento: configureApp() monta helmet, cors y el resto
+  // sobre la instancia que reciba, así que reusar la del intento fallido apila
+  // la pila de middlewares una vez por rebuild.
+  const expressApp = express();
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
     new ExpressAdapter(expressApp),
@@ -111,13 +127,20 @@ async function build(): Promise<void> {
   // Express tiene que ser listener ANTES de init(): engine.io captura la cadena
   // al hacer attach y delega en ella lo que no sea suyo. Si acá quedara el
   // listener de la cola, cada request no-socket.io se re-emitiría para siempre.
-  // El remove de expressApp es para que un reintento no lo deje duplicado.
-  server.removeListener('request', queuedRequest);
-  server.removeListener('request', expressApp);
+  //
+  // Va removeAllListeners y no un remove puntual porque esto puede correr más
+  // de una vez (un arranque fallido se reintenta): cada attach de engine.io
+  // envuelve la cadena anterior, así que dejar la del build previo hace que un
+  // request se atienda una vez por build acumulado.
+  server.removeAllListeners('request');
+  server.removeAllListeners('upgrade');
   server.on('request', expressApp);
 
   await app.init();
-  server.removeListener('upgrade', queuedUpgrade);
+
+  const [request] = server.listeners('request') as Dispatch[];
+  const [upgrade] = server.listeners('upgrade') as Dispatch[];
+  dispatch = { request, upgrade };
 }
 
 // Se arranca ya, sin esperar al primer request: cuanto antes esté el listener
