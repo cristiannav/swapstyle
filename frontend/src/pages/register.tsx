@@ -1,21 +1,21 @@
-import { Link } from 'react-router';
-import { useNavigate } from 'react-router';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Button, Field, Input } from '@/components/ui';
-import { useAuth } from '@/contexts/auth-context';
-import { useToast } from '@/contexts/toast-context';
-import { ApiError } from '@/lib/api-error';
-import { passwordSchema, usernameSchema } from '@/lib/security';
+import { Link } from "react-router";
+import { useNavigate } from "react-router";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button, Field, Input } from "@/components/ui";
+import { useAuth } from "@/contexts/auth-context";
+import { useToast } from "@/contexts/toast-context";
+import { ApiError } from "@/lib/api-error";
+import { passwordSchema, usernameSchema } from "@/lib/security";
 
 const registerSchema = z.object({
-  name: z.string().min(2, 'Mínimo 2 caracteres').max(80),
+  name: z.string().min(2, "Mínimo 2 caracteres").max(80),
   username: usernameSchema,
-  email: z.string().email('Email inválido'),
+  email: z.string().email("Email inválido"),
   password: passwordSchema,
-  birthdate: z.string().optional().or(z.literal('')),
+  birthdate: z.string().optional().or(z.literal("")),
 });
 
 type FormValues = z.infer<typeof registerSchema>;
@@ -32,7 +32,13 @@ export default function RegisterPage() {
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { name: '', username: '', email: '', password: '', birthdate: '' },
+    defaultValues: {
+      name: "",
+      username: "",
+      email: "",
+      password: "",
+      birthdate: "",
+    },
   });
 
   const onSubmit = async (values: FormValues) => {
@@ -45,10 +51,13 @@ export default function RegisterPage() {
         password: values.password,
         birthdate: values.birthdate || undefined,
       });
-      navigate('/feed', { replace: true });
+      navigate("/feed", { replace: true });
     } catch (error) {
-      const msg = error instanceof ApiError ? error.message : 'No pudimos crear la cuenta';
-      show(msg, 'danger');
+      const msg =
+        error instanceof ApiError
+          ? error.message
+          : "No pudimos crear la cuenta";
+      show(msg, "danger");
       setSubmitting(false);
     }
   };
@@ -56,7 +65,9 @@ export default function RegisterPage() {
   return (
     <div className="space-y-6">
       <header className="space-y-1">
-        <h1 className="text-display text-3xl text-text-primary">Crear cuenta</h1>
+        <h1 className="text-display text-3xl text-text-primary">
+          Crear cuenta
+        </h1>
         <p className="text-text-secondary text-sm">
           Sumate a SwapStyle y empezá a intercambiar.
         </p>
@@ -69,17 +80,21 @@ export default function RegisterPage() {
             autoComplete="name"
             placeholder="Cómo te presentás"
             invalid={!!errors.name}
-            {...register('name')}
+            {...register("name")}
           />
         </Field>
 
-        <Field label="Usuario" htmlFor="username" error={errors.username?.message}>
+        <Field
+          label="Usuario"
+          htmlFor="username"
+          error={errors.username?.message}
+        >
           <Input
             id="username"
             autoComplete="username"
             placeholder="tu_usuario"
             invalid={!!errors.username}
-            {...register('username')}
+            {...register("username")}
           />
         </Field>
 
@@ -90,7 +105,7 @@ export default function RegisterPage() {
             autoComplete="email"
             placeholder="vos@ejemplo.com"
             invalid={!!errors.email}
-            {...register('email')}
+            {...register("email")}
           />
         </Field>
 
@@ -105,16 +120,8 @@ export default function RegisterPage() {
             type="password"
             autoComplete="new-password"
             invalid={!!errors.password}
-            {...register('password')}
+            {...register("password")}
           />
-        </Field>
-
-        <Field
-          label="Fecha de nacimiento (opcional)"
-          htmlFor="birthdate"
-          error={errors.birthdate?.message}
-        >
-          <Input id="birthdate" type="date" {...register('birthdate')} />
         </Field>
 
         <Button type="submit" loading={submitting} fullWidth size="lg">
@@ -123,8 +130,11 @@ export default function RegisterPage() {
       </form>
 
       <p className="text-sm text-text-secondary text-center">
-        ¿Ya tenés cuenta?{' '}
-        <Link to="/login" className="inline-flex min-h-11 items-center font-semibold text-brand-700 hover:underline">
+        ¿Ya tenés cuenta?{" "}
+        <Link
+          to="/login"
+          className="inline-flex min-h-11 items-center font-semibold text-brand-700 hover:underline"
+        >
           Iniciar sesión
         </Link>
       </p>
