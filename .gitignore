@@ -49,7 +49,8 @@ docker/volumes/
 .agents
 .claude
 awesome-design-md-main/
-docs/
+docs/*
+!docs/STATUS.md
 graphify-out/
 .env.example
 CLAUDE.md
