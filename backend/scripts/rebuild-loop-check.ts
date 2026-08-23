@@ -25,6 +25,8 @@ import server from '../api/index';
 
 const PORT = 4499;
 const DB_PROXY_PORT = Number(process.env.POSTGRES_PORT ?? 5499);
+// Dónde escucha el Postgres de verdad, por si el 5432 lo tiene ocupado otro.
+const DB_PORT = Number(process.env.POSTGRES_UPSTREAM_PORT ?? 5432);
 const base = `http://localhost:${PORT}`;
 
 // El LoggingInterceptor escribe una línea por request atendido: contarlas dice
@@ -46,7 +48,7 @@ function blackhole(): net.Server {
 function openDbProxy(): net.Server {
   return net
     .createServer((client) => {
-      const upstream = net.connect(5432, '127.0.0.1');
+      const upstream = net.connect(DB_PORT, '127.0.0.1');
       client.pipe(upstream).pipe(client);
       client.on('error', () => upstream.destroy());
       upstream.on('error', () => client.destroy());

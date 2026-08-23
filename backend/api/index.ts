@@ -143,10 +143,14 @@ async function build(): Promise<void> {
   dispatch = { request, upgrade };
 }
 
-// Se arranca ya, sin esperar al primer request: cuanto antes esté el listener
-// de upgrade que registra el IoAdapter, más corta es la ventana de la cola.
-void init().catch((err) => {
-  console.error('[bootstrap] fallo al inicializar Nest', err);
-});
-
+// A propósito no se arranca acá. Arrancar al evaluarse el módulo parece más
+// rápido, pero Vercel congela la instancia apenas termina de cargarla y el
+// connect a Postgres queda a medias: al descongelar, ese socket ya está muerto y
+// el arranque se cae con "Unable to connect to the database" antes de que el
+// reintento conecte de verdad. Peor todavía, si el request llega antes de que
+// ese fallo se propague, se cuelga de la promesa condenada y se lleva un 503.
+//
+// Arrancando en el primer request no hay ventana de congelamiento en el medio:
+// el request mantiene viva la instancia hasta que Nest termina de armarse. Lo
+// que llegue mientras tanto lo cubre la cola, que es para lo que está.
 export default server;
