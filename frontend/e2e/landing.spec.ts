@@ -7,7 +7,11 @@ test('home muestra el hero y los botones de auth', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'SwapStyle' })).toBeVisible();
   await expect(page.getByRole('heading', { level: 1, name: /Swipeá la prenda/ })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Crear cuenta' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Iniciar sesión' })).toBeVisible();
+  // En mobile el "Iniciar sesión" del header se oculta (sm:inline-flex) y el
+  // acceso queda en el "Ya tengo cuenta" del hero.
+  await expect(
+    page.getByRole('link', { name: /^(Iniciar sesión|Ya tengo cuenta)$/ }).first(),
+  ).toBeVisible();
 });
 
 test('flujo de registro pide los campos requeridos', async ({ page }) => {
