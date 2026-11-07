@@ -27,6 +27,7 @@ Backend y frontend están desplegados en Vercel y funcionando. Detalle completo
 | Base | Supabase `sa-east-1`, migrada y con el seed corrido |
 | Redis | Upstash |
 | Salud | `/api/health/ready` → 200 (`database: ok`, `redis: ok`), ~2s en frío y ~0.6s en caliente |
+| Keep-alive | Cron diario de Vercel a `/api/health/ready` (`backend/vercel.json`). Supabase free pausa el proyecto tras una semana sin tráfico y el backend queda en 503 — no sacarlo |
 
 El chat en vivo corre sobre Fluid Compute con el fanout entre instancias por
 Redis. El entrypoint serverless (`backend/api/index.ts`) es la parte delicada:
