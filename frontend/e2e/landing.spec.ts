@@ -19,3 +19,16 @@ test('flujo de registro pide los campos requeridos', async ({ page }) => {
   await page.getByRole('button', { name: 'Crear cuenta' }).click();
   await expect(page.getByText('Mínimo 2 caracteres').first()).toBeVisible();
 });
+
+// Necesita el backend arriba y la base con el seed (backend/scripts/seed.js).
+// /api/auth/login acepta 5 intentos por minuto por IP y cada corrida usa dos.
+test('login con un usuario del seed entra al feed y mantiene la sesión', async ({ page }) => {
+  await page.goto('/login');
+  await page.getByLabel('Email').fill('sofia_garcia@swapstyle.test');
+  await page.getByLabel('Contraseña').fill(process.env.SEED_PASSWORD ?? 'Abcd1234');
+  await page.getByRole('button', { name: 'Iniciar sesión' }).click();
+  await expect(page).toHaveURL(/\/feed$/);
+
+  await page.reload();
+  await expect(page).toHaveURL(/\/feed$/);
+});
