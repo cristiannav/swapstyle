@@ -7,7 +7,10 @@ export default function HomePage() {
       {/* Top bar */}
       <header className="px-6 py-5">
         <div className="mx-auto max-w-6xl flex items-center justify-between">
-          <Link to="/" className="inline-flex min-h-11 items-center text-display text-2xl text-brand-700">
+          <Link
+            to="/"
+            className="inline-flex min-h-11 items-center text-display text-2xl text-brand-700"
+          >
             SwapStyle
           </Link>
           <nav className="flex items-center gap-3">
@@ -100,7 +103,7 @@ export default function HomePage() {
                   rotate: "4deg",
                   translate: "sm:translate-x-4",
                   img: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=800&fit=crop&q=80",
-                  tag: "Camisa oversize",
+                  tag: "Remera Slim Fit",
                 },
               ].map((card, i) => (
                 <div
